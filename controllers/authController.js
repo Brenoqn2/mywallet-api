@@ -5,9 +5,15 @@ import { v4 as uuid } from "uuid";
 export async function signUp(req, res) {
   const { user, email, password } = req.body;
 
-  const passwordHash = bcrypt.hashSync(password, 10);
+  const alreadyUsedEmail = await db
+    .collection("users")
+    .findOne({ email: req.body.email });
 
-  console.log(db);
+  if (alreadyUsedEmail) {
+    return res.sendStatus(409);
+  }
+
+  const passwordHash = bcrypt.hashSync(password, 10);
 
   try {
     await db.collection("users").insertOne({
