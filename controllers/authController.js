@@ -46,3 +46,16 @@ export async function signIn(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function logOut(req, res) {
+  try {
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer", "").trim();
+    if (!token) return res.sendStatus(422);
+    await db.collection("sessions").deleteOne({ token: token });
+    res.sendStatus(204);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
