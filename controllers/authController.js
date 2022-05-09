@@ -59,3 +59,17 @@ export async function logOut(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function removeSessions() {
+  try {
+    const sessions = await db.collection("sessions").find({}).toArray();
+    const now = Date.now();
+    sessions.forEach(async (session) => {
+      if (now - session.lastStatus > 600000) {
+        await db.collection("sessions").deleteOne({ token: session.token });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}

@@ -10,6 +10,10 @@ async function checkSession(req) {
 
   if (user !== session.user) return false;
 
+  await db
+    .collection("sessions")
+    .updateOne({ token: token }, { $set: { lastStatus: Date.now() } });
+
   return session;
 }
 
