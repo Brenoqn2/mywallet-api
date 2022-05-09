@@ -20,7 +20,7 @@ export async function getTransactions(req, res) {
 
     const transactions = await db
       .collection("transactions")
-      .find({ email: session.email })
+      .find({ user: session.user })
       .toArray();
 
     res.send(transactions);
